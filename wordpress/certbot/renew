@@ -1,0 +1,10 @@
+docker run --rm -p 0.0.0.0:80:80 -v $PWD/letsencrypt:/etc/letsencrypt/ certbot/certbot \
+      certonly \
+      --standalone \
+      --preferred-challenges http \
+      --agree-tos \
+      --no-eff-email \
+      --non-interactive \
+      --expand \
+      -m 'mail@ansgargerlicher.de' \
+      -d 'www.ansgargerlicher.de,ansgargerlicher.de'

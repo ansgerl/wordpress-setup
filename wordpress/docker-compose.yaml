@@ -1,0 +1,47 @@
+version: '3.1'
+
+services:
+  wordpress:
+    image: wordpress
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: exampleuser
+      WORDPRESS_DB_PASSWORD: examplepass
+      WORDPRESS_DB_NAME: exampledb
+    volumes:
+      - wordpress:/var/www/html
+    networks:
+     - frontend
+     - backend
+  db:
+    image: mariadb:latest
+    restart: always
+    environment:
+      MYSQL_DATABASE: exampledb
+      MYSQL_USER: exampleuser
+      MYSQL_PASSWORD: examplepass
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - db:/var/lib/mysql
+    networks:
+     - backend
+  proxy:
+    image: 'nginx:alpine'
+    restart: always
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - './proxy/nginx.conf:/etc/nginx/nginx.conf:ro'
+      - './letsencrypt/live/www.ansgargerlicher.de/fullchain.pem:/usr/share/nginx/ssl/fullchain.pem:ro'
+      - './letsencrypt/live/www.ansgargerlicher.de/privkey.pem:/usr/share/nginx/ssl/privkey.pem:ro'
+    networks:
+     - frontend
+
+volumes:
+  wordpress:
+  db:
+networks:
+  backend:      
+  frontend: 
